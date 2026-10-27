@@ -1,26 +1,56 @@
+# Dependabot: monthly version updates in one PR per ecosystem, no major
+# versions except for GitHub Actions (majors need a tested upgrade), and
+# security fixes grouped into one PR per ecosystem. Security updates may
+# still propose a major version when it is the only fix.
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    groups:
-      github-actions:
-        patterns: ["*"]
-    open-pull-requests-limit: 5
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    groups:
-      pip:
-        patterns: ["*"]
-    open-pull-requests-limit: 5
-  - package-ecosystem: "npm"
-    directory: "/js"
-    schedule:
-      interval: "weekly"
-    groups:
-      npm:
-        patterns: ["*"]
-    open-pull-requests-limit: 5
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: monthly
+  groups:
+    github-actions:
+      applies-to: version-updates
+      patterns:
+      - '*'
+    github-actions-security:
+      applies-to: security-updates
+      patterns:
+      - '*'
+  open-pull-requests-limit: 2
+- package-ecosystem: pip
+  directory: /
+  schedule:
+    interval: monthly
+  groups:
+    pip:
+      applies-to: version-updates
+      patterns:
+      - '*'
+    pip-security:
+      applies-to: security-updates
+      patterns:
+      - '*'
+  open-pull-requests-limit: 2
+  ignore:
+  - dependency-name: '*'
+    update-types:
+    - version-update:semver-major
+- package-ecosystem: npm
+  directory: /js
+  schedule:
+    interval: monthly
+  groups:
+    npm:
+      applies-to: version-updates
+      patterns:
+      - '*'
+    npm-security:
+      applies-to: security-updates
+      patterns:
+      - '*'
+  open-pull-requests-limit: 2
+  ignore:
+  - dependency-name: '*'
+    update-types:
+    - version-update:semver-major
