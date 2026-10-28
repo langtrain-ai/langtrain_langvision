@@ -57,3 +57,25 @@ jobs:
         python -m pip install --upgrade pip build twine
         python -m build
         twine check dist/*
+
+  js:
+    # The TypeScript client in js/ was never built by CI: a dependency bump
+    # to TypeScript 7 broke its build while every check here stayed green.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: js
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: js/package-lock.json
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Type-check
+        run: npx tsc --noEmit -p .
+      - name: Built package loads
+        run: node -e "const m = require('./dist/index.js'); if (!m.FinetuneConfigSchema) throw new Error('FinetuneConfigSchema missing'); console.log(Object.keys(m))"
