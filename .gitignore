@@ -93,3 +93,6 @@ __pycache__/
 
 # JS dependencies
 node_modules/
+
+# Open WebUI writes its local session-signing key here
+.webui_secret_key
